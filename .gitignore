@@ -1,3 +1,9 @@
+# General
+Personal
+.DS_Store
+
+# ——— R stuff ————
+
 # History files
 .Rhistory
 .Rapp.history
