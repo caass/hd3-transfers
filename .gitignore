@@ -1,5 +1,7 @@
-# General
+# Personal / sensitive data
 Personal
+
+# Mac
 .DS_Store
 
 # ——— R stuff ————
@@ -37,3 +39,4 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+.Rproj.user

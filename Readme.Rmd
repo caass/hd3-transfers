@@ -1,8 +1,13 @@
-HD3 Transfers
-================
+---
+title: "HD3 Transfers"
+output: github_document
+---
 
-Analyzing Patient Transfers in the Atlanta HD3 Area
----------------------------------------------------
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analyzing Patient Transfers in the Atlanta HD3 Area
 
 In my work as a data analyst with a government agency, I'm given a dataset of digitized case reports of people who came in to private practice doctors, public hospitals, and nursing facilities. Some of these cases tested positive for a certain antibiotic-resistant infection. By tracking where these people went (transfers between hospitals), I can generate a network map of where this bug went.
 
