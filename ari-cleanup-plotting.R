@@ -1,6 +1,7 @@
 # ----------------------
 #
-# Read in dirty data on bug transfers, clean it up, and plot it to Visuals
+# Read in dirty data on antibiotic-resistant infection (ARI)
+# transfers, clean it up, and plot it to Visuals
 #
 # ----------------------
 
@@ -11,14 +12,14 @@ library(RColorBrewer)
 
 # Set working directory and read in data from CSV
 setwd('~/Projects/hd3-transfers')
-CASES_RAW <- read.csv('Raw Data/cases.csv')
-facilities_info <- read.csv('Raw Data/bug_facilities.csv')
+CASES_RAW <- read.csv('ARI Data/Raw/cases.csv')
+facilities_info <- read.csv('ARI Data/Raw/ari_facilities.csv')
 
 # Clean up dataset --------------
 
 # If the bug status is Unkown or Pending, remove the data point because
 # medical records are either unavailable or unavailable now
-valid_case <- which(CASES_RAW$bugstatus != 'U' & CASES_RAW$bugstatus != 'P')
+valid_case <- which(CASES_RAW$aristatus != 'U' & CASES_RAW$aristatus != 'P')
 
 clean_data <- data.frame('stateid' = CASES_RAW$stateid[valid_case])
 
@@ -165,20 +166,6 @@ for (i in 1:length(collects)) {
 
   edges_df <- rbind(edges_df, current_transfers_df)
 }
-
-# "Clean" edges_df for use in plotting
-clean_edges_df <- edges_df[-which(edges_df$from == 'UNK' | edges_df$from == 'GAMDO'
-                                  | edges_df$from == 'UNK' | edges_df$to == 'UNK'
-                                  | edges_df$to == 'GAMDO' | edges_df$to == 'RIP'),]
-
-# For output to Facility_Merger.R
-relevant_ids <- unique(as.character(unlist(edges_df[,c('from', 'to')])))
-relevant_ids <- relevant_ids[-which(relevant_ids == 'HOMEL'
-                                    | relevant_ids == 'PRRES' |
-                                      relevant_ids == 'INCAR' |
-                                      relevant_ids == 'GAMDO' |
-                                      relevant_ids == 'UNK' | relevant_ids == 'RIP')]
-#write.csv(as.data.frame(relevant_ids), file = 'Raw Data/Relevant IDs.csv')
 
 # Nodes dataframe
 raw_nodes <- unique(na.omit(unlist(clean_data[,c('residence', 'collect', 'dxto')])))
@@ -458,9 +445,10 @@ legend('topleft', c('Long-Term Acute Care Hospital (LTACH)',
 
 dev.off()
 
-# Write cleaned data to CSVs
-write.csv(facilities_info, 'Cleaned Data/bug_facilities.csv', row.names = FALSE)
-write.csv(edges_df, 'Cleaned Data/bug_transfers.csv', row.names = FALSE)
+# Write cleaned data to CSVs (nodes and edges)
+write.csv(facilities_info, 'ARI Data/Cleaned/ari_facilities.csv', row.names = FALSE)
+write.csv(edges_df, 'ARI Data/Cleaned/ari_transfers.csv', row.names = FALSE)
 
+# Export layout to make future visualization easier
 export_layout <- cbind(real_layout, names(V(real_graph)))
-write.csv(export_layout, 'Cleaned Data/bug_layout.csv', row.names = FALSE)
+write.csv(export_layout, 'ARI Data/Cleaned/ari_layout.csv', row.names = FALSE)
