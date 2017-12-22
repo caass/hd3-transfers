@@ -299,7 +299,6 @@ plot(real_graph, layout = real_layout, rescale = FALSE, ylim = c(ymin, ymax),
      vertex.color = 'grey',
 
      # Label parameters
-     vertex.label = NA,  # For anonymizing plot for github
      vertex.label.dist = 2.7,
      vertex.label.family = 'sans',
      vertex.label.color = 'black',
@@ -361,7 +360,6 @@ plot(adm_graph, layout = adm_layout, rescale = FALSE, ylim = c(ymin, ymax),
      vertex.color = 'grey',
 
      # Label parameters
-     vertex.label = NA,  # For anonymizing plot for github
      vertex.label.dist = 2.7,
      vertex.label.family = 'sans',
      vertex.label.color = 'black',
@@ -424,7 +422,6 @@ plot(dx_graph, layout = dx_layout, rescale = FALSE, ylim = c(ymin, ymax),
      vertex.color = 'grey',
 
      # Label parameters
-     vertex.label = NA,  # For anonymizing plot for github
      vertex.label.dist = 2.7,
      vertex.label.family = 'sans',
      vertex.label.color = 'black',
