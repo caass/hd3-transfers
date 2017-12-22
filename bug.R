@@ -286,7 +286,7 @@ node_shapes <- as.character(node_shapes_opts[nodes_df$type])
 pdf(file = 'Visuals/ARI Network.pdf', width = 11, height = 8.5, pointsize = 9)
 
 plot(real_graph, layout = real_layout, rescale = FALSE, ylim = c(ymin, ymax),
-     xlim = c(xmin, xmax), asp = 0, main = '2016 GA HD3 CRE Direct Transfers',
+     xlim = c(xmin, xmax), asp = 0, main = '2016 GA HD3 ARI Direct Transfers',
 
      # Edge parameters
      edge.color = edge_types,
@@ -299,6 +299,7 @@ plot(real_graph, layout = real_layout, rescale = FALSE, ylim = c(ymin, ymax),
      vertex.color = 'grey',
 
      # Label parameters
+     vertex.label = NA,  # For anonymizing plot for github
      vertex.label.dist = 2.7,
      vertex.label.family = 'sans',
      vertex.label.color = 'black',
@@ -347,7 +348,7 @@ for(i in 1:length(V(adm_graph))){
 
 plot(adm_graph, layout = adm_layout, rescale = FALSE, ylim = c(ymin, ymax),
      xlim = c(xmin, xmax), asp = 0,
-     main = '2016 GA HD3 CRE Direct Transfers (Admissions Only)',
+     main = '2016 GA HD3 ARI Direct Transfers (Admissions Only)',
 
      # Edge parameters
      edge.color = 'darkorange',
@@ -360,6 +361,7 @@ plot(adm_graph, layout = adm_layout, rescale = FALSE, ylim = c(ymin, ymax),
      vertex.color = 'grey',
 
      # Label parameters
+     vertex.label = NA,  # For anonymizing plot for github
      vertex.label.dist = 2.7,
      vertex.label.family = 'sans',
      vertex.label.color = 'black',
@@ -409,7 +411,7 @@ for(i in 1:length(V(dx_graph))){
 
 plot(dx_graph, layout = dx_layout, rescale = FALSE, ylim = c(ymin, ymax),
      xlim = c(xmin, xmax), asp = 0,
-     main = '2016 GA HD3 CRE Direct Transfers (Discharges Only)',
+     main = '2016 GA HD3 ARI Direct Transfers (Discharges Only)',
 
      # Edge parameters
      edge.color = 'dodgerblue1',
@@ -422,6 +424,7 @@ plot(dx_graph, layout = dx_layout, rescale = FALSE, ylim = c(ymin, ymax),
      vertex.color = 'grey',
 
      # Label parameters
+     vertex.label = NA,  # For anonymizing plot for github
      vertex.label.dist = 2.7,
      vertex.label.family = 'sans',
      vertex.label.color = 'black',
