@@ -235,7 +235,7 @@ mtext(c('~100% of Transfers', 'Contained ARI', '~0% of Transfers', 'Contained AR
 # Plot the main graph
 par(mar = c(0, 0, 4, 2) + 0.1)
 plot(denom_graph, layout = denom_layout, rescale = FALSE, ylim = c(ymin, ymax),
-     xlim = c(xmin, xmax), asp = 0, main = 'Denominator Direct Transfers',
+     xlim = c(xmin, xmax), asp = 0, main = 'Denominator Direct Transfers (ARI Overlay)',
 
      # Edge parameters
      edge.color = E(denom_graph)$col,
