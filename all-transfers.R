@@ -198,7 +198,7 @@ mystar <- function(coords, v=NULL, params) {
 add_shape("star", clip=shape_noclip,
           plot=mystar, parameters=list(vertex.norays=2))
 
-node_shapes_opts <- c('circle', 'star', 'circle', 'triangle', 'square', 'circle')
+node_shapes_opts <- c('circle', 'triangle', 'square')
 names(node_shapes_opts) <- unique(nodes_df$type)
 node_shapes <- node_shapes_opts[nodes_df$type]
 
@@ -271,7 +271,7 @@ legend('topleft', c('Long-Term Acute Care Hospital (LTACH)',
        lwd = c(0, 0, 0, 2, 2, 2, 0),
        seg.len = 2,
 
-       pch = c(24, 22, 23, NA, NA, NA, NA),
+       pch = c(24, 22, 21, NA, NA, NA, NA),
        pt.bg = c('grey', 'grey', 'grey'),
        pt.cex = c(1.5, 1.5, 1.5),
        pt.lwd = .75,
