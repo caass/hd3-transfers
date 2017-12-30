@@ -264,8 +264,8 @@ add_shape("star", clip=shape_noclip,
           plot=mystar, parameters=list(vertex.norays=2))
 
 node_shapes_opts <- c('circle', 'star', 'circle', 'triangle', 'square', 'circle')
-names(node_shapes_opts) <- levels(nodes_df$type)
-node_shapes <- as.character(node_shapes_opts[nodes_df$type])
+names(node_shapes_opts) <- unique(nodes_df$type)
+node_shapes <- node_shapes_opts[nodes_df$type]
 
 # Plot ---------
 

@@ -14,3 +14,12 @@ I also have a dataset of all of the patient transfers in the state of Georgia, r
 ![ARI Overlaid on Denominator Data](Visuals/Denominator%20Network%20(ARI%20Overlay).png) [PDF Version](Visuals/Denominator%20Network%20(ARI%20Overlay).pdf)
 
 [Check out the code in `all-transfers.R`](all-transfers.R)
+
+This graph doesn't look very promising; the overlay doesn't reflect the underlying graph very much at all. A quick check on the correlation confirms this:
+
+``` r
+# Check correlation between normalized ARI and denominator data
+cor(ari, denom)
+```
+
+    ## [1] 0.3595731
