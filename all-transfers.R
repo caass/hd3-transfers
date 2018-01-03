@@ -147,6 +147,9 @@ for(i in 1:length(edge_has_ari)){
 E(denom_graph)$width <- log10(E(denom_graph)$count)
 E(denom_graph)$width[which(is.nan(E(denom_graph)$width))] <- 1
 
+# Add in abs_count for later use in calculating weighted degree
+E(denom_graph)$abs_count <- abs(E(denom_graph)$count)
+
 # Edge types reflect whether or not we have >10 cases
 E(denom_graph)$type <- 1
 E(denom_graph)$type[which(E(denom_graph)$count < 0)] <- 2
@@ -285,7 +288,25 @@ legend('topleft', c('Long-Term Acute Care Hospital (LTACH)',
 
 dev.off()
 
-# Export cleaned data
-write.csv(denom_transfers, 'Denominator Data/Cleaned/all_transfers.csv', row.names = FALSE)
-write.csv(denom_facilities, 'Denominator Data/Cleaned/all_facilities.csv', row.names = FALSE)
+# Data export --
+denom_export <- facilities_key
+denom_fac_data <- denom_facilities[,c('fac_type', 'stays', 'ACH_direct_transfer', 'patient_days', 'street_new', 'city_new', 'STATE_CD', 'numid')]
+denom_export <- merge(denom_export, denom_fac_data, by.x = 'ccn', by.y = 'numid')
+
+# Add in graph metrics
+indegree <- degree(denom_graph, mode = 'in')
+outdegree <- degree(denom_graph, mode = 'out')
+weighted_indegree <- graph.strength(denom_graph, mode = 'in', weights = E(denom_graph)$abs_count)
+weighted_outdegree <- graph.strength(denom_graph, mode = 'out', weights = E(denom_graph)$abs_count)
+centrality <- betweenness(denom_graph)
+
+# Merge
+graph_data <- data.frame(indegree, outdegree, weighted_indegree, weighted_outdegree, centrality, id = names(indegree))
+denom_export <- merge(graph_data, denom_export)
+denom_export <- denom_export[,c('id', 'ccn', 'name', 'type', 'fac_type', 'stays', 'ACH_direct_transfer', 'patient_days', 'street_new', 'city_new', 'STATE_CD', 'indegree', 'outdegree', 'weighted_indegree', 'weighted_outdegree', 'centrality')]
+
+# Write
+write.csv(denom_transfers, 'Denominator Data/Cleaned/denominator_transfers.csv', row.names = FALSE)
 write.csv(edges_df, 'Denominator Data/Cleaned/overlapping_edges.csv', row.names = FALSE)
+write.csv(denom_export, 'Denominator Data/Cleaned/overlapping_facilities.csv', row.names = FALSE)
+
