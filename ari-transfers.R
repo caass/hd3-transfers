@@ -130,6 +130,34 @@ for (i in 2:4) {
   clean_data[which(clean_data[,i] == 'UNKNOWN'),i] <- 'UNK'
 }
 
+
+# Add in indirect ARI transfers --
+
+# Because os many people came from PRRES, use some logic to flush out the data;
+# If they were at a LTAC, LTCF, or ACF in the last year, sub in that data point
+
+# The only people we need to check are the people that came from PRRES
+potential_indirects <- which(clean_data$residence == 'PRRES')
+indirect_vec <- rep(FALSE, length(clean_data$residence))
+
+for (i in potential_indirects) {
+  current_state <- as.character(clean_data$stateid[i])
+  case_row <- which(CASES_RAW$stateid == current_state)
+  if (CASES_RAW$ltacyr[case_row] == 'Y') {
+    clean_data$residence[i] <- as.character(CASES_RAW$ltacyrid[case_row])
+    indirect_vec[i] <- TRUE
+  } else if (CASES_RAW$ltcyr[case_row] == 'Y') {
+    clean_data$residence[i] <- as.character(CASES_RAW$ltcyrid[case_row])
+    indirect_vec[i] <- TRUE
+  } else if (CASES_RAW$hospyr[case_row] == 'Y') {
+    clean_data$residence[i] <- as.character(CASES_RAW$prhospid[case_row])
+    indirect_vec[i] <- TRUE
+  }
+}
+
+clean_data <- cbind(clean_data, indirect_vec)
+
+
 # At this point clean_data has only a few empty cases, and those are where a
 # case was recorded with the bug, but there was no info on the patient other
 # than that
@@ -445,10 +473,15 @@ legend('topleft', c('Long-Term Acute Care Hospital (LTACH)',
 
 dev.off()
 
-# Write cleaned data to CSVs (nodes and edges)
+# Export Data ----
+
+# Write graph data to CSVs (nodes and edges and layout)
 write.csv(facilities_info, 'ARI Data/Cleaned/ari_facilities.csv', row.names = FALSE)
 write.csv(edges_df, 'ARI Data/Cleaned/ari_transfers.csv', row.names = FALSE)
 
-# Export layout to make future visualization easier
 export_layout <- cbind(real_layout, names(V(real_graph)))
 write.csv(export_layout, 'ARI Data/Cleaned/ari_layout.csv', row.names = FALSE)
+
+# Also export cleaned data
+names(clean_data)[5] <- 'indirect'
+write.csv(clean_data, 'ARI Data/Cleaned/ari_cases.csv')

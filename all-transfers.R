@@ -306,7 +306,7 @@ denom_export <- merge(graph_data, denom_export)
 denom_export <- denom_export[,c('id', 'ccn', 'name', 'type', 'fac_type', 'stays', 'ACH_direct_transfer', 'patient_days', 'street_new', 'city_new', 'STATE_CD', 'indegree', 'outdegree', 'weighted_indegree', 'weighted_outdegree', 'centrality')]
 
 # Write
-write.csv(denom_transfers, 'Denominator Data/Cleaned/denominator_transfers.csv', row.names = FALSE)
+write.csv(denom_transfers, 'Denominator Data/Cleaned/all_transfers.csv', row.names = FALSE)
 write.csv(edges_df, 'Denominator Data/Cleaned/overlapping_edges.csv', row.names = FALSE)
 write.csv(denom_export, 'Denominator Data/Cleaned/overlapping_facilities.csv', row.names = FALSE)
 
