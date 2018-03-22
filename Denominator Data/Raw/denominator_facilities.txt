@@ -1,1 +1,0 @@
-numid	stays	FAC_NAME	street_new	city_new	STATE_CD	fac_type

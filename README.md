@@ -1,25 +1,26 @@
 HD3 Transfers
 ================
 
-### Analyzing Patient Transfers in the Atlanta HD3 Area
+###### Analyzing Patient Movement in the Atlanta HD3 Area
 
-In my work as a data analyst with a government agency, I was given a dataset of digitized case reports of people who came in to private practice doctors, public hospitals, and nursing facilities. Some of these cases tested positive for a certain antibiotic-resistant infection (ARI). By tracking where these people went (transfers between hospitals), I generated a network map of where the ARI went. Here's a de-identified (unlabeled) version of that map:
+### Table of Contents
 
-![Antibiotic-Resistant Transfers](Visuals/ARI%20Network.gif) [PDF Version](Visuals/ARI%20Network.pdf)
+-   [Overview](#overview)
+-   [Data Merging](#data-merging)
+-   [Network Generation](#network-generation)
+-   [Plotting](#plotting)
+-   [Results](#results)
 
-[Check out the code in `ari-transfers.R`](ari-transfers.R)
+### Overview
 
-I also have a dataset of all of the patient transfers in the state of Georgia, regardless of whether or not they tested positive for the ARI. If we consider the ARI data to be the "numerator" data, this is the baseline "denominator" data. If we can find a significant correlation between these maps, then we can use general patient transfer data in order to model the spread of the ARI we care about. Here's what that overlay looks like:
+In my work as a data analyst with a government agency, I was given a dataset of digitized case reports of people who came in to private practice doctors, public hospitals, and nursing facilities (both long-term care and long-term acute care) and tested positive for a certain antibiotic-resistant infection (ARI).
 
-![ARI Overlaid on Denominator Data](Visuals/Denominator%20Network%20(ARI%20Overlay).png) [PDF Version](Visuals/Denominator%20Network%20(ARI%20Overlay).pdf)
+Thanks to another government entity, I also obtained a dataset of all of the patient movement in the Atlanta HD3 area within the same timeframe. I merged the datasets and mapped both the denominator data (all patient movement) and the numerator data (ARI movement) to see if the way that patients moved in the HD3 area was indicative of the way the ARI spread.
 
-[Check out the code in `all-transfers.R`](all-transfers.R)
+### Data Merging
 
-This graph doesn't look very promising; the overlay doesn't reflect the underlying graph very much at all. A quick check on the correlation confirms this:
+### Network Generation
 
-``` r
-# Check correlation between normalized ARI and denominator data
-cor(ari, denom)
-```
+### Plotting
 
-    ## [1] 0.3595731
+### Results

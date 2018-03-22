@@ -5,6 +5,18 @@ Readme_files/
 # Mac
 .DS_Store
 
+# Confidential data
+Raw Data/Master Facility List - protected.xlsx
+Raw Data/ari_cases_sas.xlsx
+Raw Data/ARI Cases.csv
+Raw Data/Denominator Facilities.txt
+Raw Data/Denominator Transfers.txt
+Raw Data/Master Facility List.csv
+Cleaned Data/Merged Data.xlsx
+Cleaned Data/Merged Facilities.csv
+Cleaned Data/Merged Transfers.csv
+Cleaned Data/Adjacency Matrices
+
 # ——— R stuff ————
 
 # History files
