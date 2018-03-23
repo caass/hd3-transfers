@@ -8,7 +8,7 @@ source('Data Merging.R')
 base_graph = function(){
 
   # Trim nodes and edges to relevant data only
-  nodes <- merge_facilities()[,c('id', 'type', 'stays', 'prevalence')]
+  nodes <- merge_facilities()[,c('id', 'type', 'stays', 'cases', 'prevalence')]
   edges <- merge_transfers()[,c('from', 'to', 'ari', 'transfers', 'percent_ari')]
 
   return(graph_from_data_frame(edges, vertices = nodes))

@@ -35,10 +35,15 @@ merge_facilities <- function(){
   # Merge the relevant DENOM data, and keep ARI data that doesn't match DENOM
   merged <- merge(merged, DENOM_FACILITIES[,c('numid', 'stays', 'fac_type', 'patient_days')], by.x = 'ccn', by.y = 'numid', all.x = TRUE)
 
-  # Add in a prevalence metric, which is how many cases a facility appears in
-  prevalence <- vapply(as.character(merged$id), function(x){
+  # Add in a cases metric, which is how many cases a facility appears in
+  cases <- vapply(as.character(merged$id), function(x){
     length(which(CASES$ari_residence == x | CASES$ari_collect == x | CASES$ari_dxto == x))
   }, integer(1), USE.NAMES = FALSE)
+
+  merged <- cbind(merged, cases)
+
+  # Add a prevalence metric, which is cases / stays
+  prevalence <- merged$cases / merged$stays
 
   merged <- cbind(merged, prevalence)
 
