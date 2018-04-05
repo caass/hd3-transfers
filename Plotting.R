@@ -67,8 +67,9 @@ generate_node_shapes <- function(){
 plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stays'),
                             node_colors = c('cluster', 'cases', 'prevalence'),
                             edges_to_plot = c('suppress', 'ari', 'all'),
-                            edge_colors = c('suppress', 'denominator', 'ari', 'percent_ari'),
-                            edge_widths = c('uniform', 'transfers')){
+                            edge_colors = c('denominator', 'ari', 'percent_ari'),
+                            edge_widths = c('uniform', 'transfers', 'ari'),
+                            highlight_facility = c(FALSE, TRUE)){
 
   # Set node sizes according to node_sizes ----
   node_sizes <- match.arg(node_sizes)
@@ -77,7 +78,7 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
 
     # Logs of the absolute value capture different orders of magnitude, and also make censored (negative) values
     # disappear
-    V(g)$size <- 2 * log10(abs(V(g)$stays))
+    V(g)$size <- log(abs(V(g)$stays), 5)
   } else {
     V(g)$size <- 2.5
   }
@@ -129,22 +130,43 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
     }, character(1), USE.NAMES = FALSE)
   }
 
-  # Set edge types according to transfers between nodes ----
-  E(g)$lty <- vapply(E(g)$transfers, function(x){
+  # Highlight bridging facility according to highlight_facility ----
+  # Note: Because the bridging facility is identified by it's ID, it's manually added in every time
+  if (highlight_facility) {
+    V(g)$color[which(V(g)$name == facility_to_highlight)] <- 'blue'
+  }
 
-    # Suppress plotting of edges with less then 10 transfers
-    if (x < 10) {
-      return(0)
-    }
-    # Dashed lines for less than 50 transfers
-    else if (x < 50) {
-      return(0)
-    }
-    # Solid lines for more than 50 transfers
-    else {
-      return(1)
-    }
-  }, double(1), USE.NAMES = FALSE)
+  # Set edge types according to edges_to_plot ----
+  edges_to_plot = match.arg(edges_to_plot)
+
+  # If you wanna plot all edges, assign ltys according to number of trasnfers
+  if (edges_to_plot == 'all') {
+    E(g)$lty <- vapply(E(g)$transfers, function(x){
+
+      # Suppress plotting of edges with less then 10 transfers
+      if (x < 35) {
+        return(0)
+      }
+      # Dashed lines for less than 50 transfers
+      else if (x < 100) {
+        return(2)
+      }
+      # Solid lines for more than 50 transfers
+      else {
+        return(1)
+      }
+    }, double(1), USE.NAMES = FALSE)
+  } else if (edges_to_plot == 'ari') {
+
+    # If there's ARI, plot it. Otherwise, don't
+    E(g)$lty <- vapply(E(g)$ari, function(x){
+      if (x == 0) return(0) else return(1)
+    }, double(1), USE.NAMES = FALSE)
+
+  } else if (edges_to_plot == 'suppress') {
+    # Suppress plotting
+    E(g)$lty <- 0
+  }
 
   # Give a dotted line for edges that have less than 10 transfers, but contain ARI
   if (edge_colors == 'ari' || edge_colors == 'percent_ari'){
@@ -154,21 +176,14 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
   # Set edge colors according to edge_colors ----
   edge_colors <- match.arg(edge_colors)
 
-  edge_palette <- colorRampPalette(c('lightslateblue', 'firebrick'))
-
-  if (edge_colors == 'suppress') {
-
-    E(g)$lty <- 0
-    E(g)$color <- '#ABCDEF'
-
-  }  else if (edge_colors == 'denominator') {
+  if (edge_colors == 'denominator') {
 
     E(g)$color <- 'gray'
 
   } else if (edge_colors == 'ari') {
 
     # Create a heat colors vector with a grey for edges with 0 cases
-    col_vector <- c(adjustcolor('grey', alpha.f = 1), edge_palette(max(E(g)$ari)))
+    col_vector <- c(adjustcolor('grey', alpha.f = 0.1), rev(heat.colors(max(E(g)$ari))))
     E(g)$color <- col_vector[E(g)$ari + 1]
 
   } else if (edge_colors == 'percent_ari') {
@@ -177,9 +192,34 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
     E(g)$color <- adjustcolor('grey', alpha.f = 0.1)
 
     # For edges that have a non-zero ARI percentage, assign them a color from the heatmap
-    col_vector <- edge_palette(max(round(E(g)$percent_ari * 1000)))
+    col_vector <- rev(heat.colors(max(round(E(g)$percent_ari * 1000))))
     E(g)$color[which(E(g)$ari != 0)] <- col_vector[round(E(g)$percent_ari * 1000)]
 
+  }
+
+  # Set edge_widths according to edge_widths ----
+  edge_widths <- match.arg(edge_widths)
+
+  if (edge_widths == 'uniform') {
+    E(g)$widths <- 1
+  } else if (edge_widths == 'transfers') {
+    E(g)$widths <- vapply(E(g)$transfers, function(x){
+
+      if (x <= 0) {
+        return(0.5)
+      } else {
+        return(log10(x))
+      }
+    }, double(1), USE.NAMES = FALSE)
+  } else if (edge_widths == 'ari') {
+    E(g)$widths <- vapply(E(g)$ari, function(x){
+
+      if (x <= 0) {
+        return(0.5)
+      } else {
+        return(log2(x + 1))
+      }
+    }, double(1), USE.NAMES = FALSE)
   }
 
   # Final plot setup and output to device ----
@@ -189,7 +229,22 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
   y_max <- max(l[,2]) + abs(mean(l[,2])) * 0.001
   y_min <- min(l[,2]) - abs(mean(l[,2])) * 0.001
 
+  # Figure out what the title should be
+  if (edges_to_plot == 'suppress') {
+    transfers <- 'Facilities'
+  } else if (edges_to_plot == 'ari') {
+    transfers <- 'ARI Transfers'
+  } else {
+    transfers <- 'All Medicare Transfers'
+    subtitle <- '<35 Transfers not Plotted, 35-100 Transfers Dashed, >100 Transfers Solid'
+  }
+  plot_title <- paste(transfers, 'in the HD3 Area')
+
   plot(g, layout = l, xlim = c(x_min, x_max), ylim = c(y_min, y_max), rescale = FALSE,
+
+       # Plot parameters
+       main = plot_title,
+       sub = subtitle,
 
        # Vertex parameters
        vertex.size = V(g)$size,
@@ -201,6 +256,8 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
 
        # Edge parameters
        edge.lty = E(g)$lty,
+       edge.col = E(g)$color,
+       edge.width = E(g)$widths,
 
        # Arrow parameters
        edge.arrow.mode = 0)
@@ -220,6 +277,10 @@ plot_network <- function(label_clusters = FALSE, node_sizes = c('uniform', 'stay
       text(x_mean, y = y_mean, labels = community)
     }
   }
+
+  # Create the legend according to what you plotted ----
+  #legend('topleft', )
+
 }
 
 # Run this before plotting to ensure shapes actually happen ----
@@ -269,9 +330,12 @@ mystar <- function(coords, v=NULL, params) {
 add_shape("diamond", clip=shape_noclip,
           plot=mystar, parameters=list(vertex.norays=2))
 
-# Actual executed code ----
+# Generate globals for layout and clustering ----
 l <- layout_by_denominator(layout_csv = 'Layout.csv')
 set.seed(1)  # Consistent clustering
 c <- cluster_optimal(g, weights = abs(E(g)$transfers))
+
+# Set node shapes, too
 V(g)$shape <- generate_node_shapes()
-plot_network()
+
+
