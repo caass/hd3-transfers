@@ -133,7 +133,7 @@ plot_network <- function(label_clusters = FALSE, polygon_clusters = FALSE, node_
   }
 
   # Highlight bridging facility according to highlight_facility ----
-  # Note: Because the bridging facility is identified by it's ID, it's manually added in every time ----
+  # Note: Because the bridging facility is identified by it's ID, it's manually added in every time
   if (highlight_facility) {
     V(g)$color[which(V(g)$name == facility_to_highlight)] <- 'blue'
   }
@@ -151,7 +151,7 @@ plot_network <- function(label_clusters = FALSE, polygon_clusters = FALSE, node_
       }
       # Dashed lines for less than 50 transfers
       else if (x < 100) {
-        return(2)
+        return(5)
       }
       # Solid lines for more than 50 transfers
       else {
@@ -169,7 +169,7 @@ plot_network <- function(label_clusters = FALSE, polygon_clusters = FALSE, node_
       }
       # Dashed lines for less than 50 transfers
       else if (x < 100) {
-        return(2)
+        return(5)
       }
       # Solid lines for more than 50 transfers
       else {
@@ -185,11 +185,6 @@ plot_network <- function(label_clusters = FALSE, polygon_clusters = FALSE, node_
     E(g)$lty <- 0
   }
 
-  # Give a dotted line for edges that have less than 10 transfers, but contain ARI
-  if (edge_colors == 'ari' || edge_colors == 'percent_ari'){
-    E(g)$lty[which(E(g)$lty == 0 & E(g)$ari > 0)] <- 3
-  }
-
   # Set edge colors according to edge_colors ----
   edge_colors <- match.arg(edge_colors)
 
@@ -199,9 +194,38 @@ plot_network <- function(label_clusters = FALSE, polygon_clusters = FALSE, node_
 
   } else if (edge_colors == 'ari') {
 
+    # Create a palette
+    edge_pal <- c('lightgreen', 'dodgerblue', 'orangered', 'black')
+
     # Create a heat colors vector with a grey for edges with 0 cases
-    col_vector <- c(adjustcolor('grey', alpha.f = 0.1), rev(heat.colors(max(E(g)$ari))))
-    E(g)$color <- col_vector[E(g)$ari + 1]
+    E(g)$color <- vapply(E(g)$ari, function(x){
+
+      # Edges with no ARI are greyed out
+      if (x == 0) {
+        return(adjustcolor('grey', 0.4))
+      }
+
+      # Edges with one case get green
+      else if (x == 1){
+        return(edge_pal[1])
+      }
+
+      # Two cases gets blue
+      else if (x == 2){
+        return(edge_pal[2])
+      }
+
+      # Three cases
+      else if (x == 3){
+        return(edge_pal[3])
+      }
+
+      # Four cases
+      else if (x==4){
+        return(edge_pal[4])
+      }
+
+    }, character(1), USE.NAMES = FALSE)
 
   } else if (edge_colors == 'percent_ari') {
 
@@ -248,12 +272,22 @@ plot_network <- function(label_clusters = FALSE, polygon_clusters = FALSE, node_
   } else if (edge_widths == 'ari') {
     E(g)$widths <- vapply(E(g)$ari, function(x){
 
-      if (x <= 0) {
-        return(0.5)
+      if (x == 0) {
+        return(1)
       } else {
-        return(log2(x + 1))
+        return(3)
       }
     }, double(1), USE.NAMES = FALSE)
+
+    E(g)$arrows <- vapply(E(g)$percent_ari, function(x){
+      if(x != 0){
+        return(2)
+      } else {
+        return(0)
+      }
+    }, double(1), USE.NAMES = FALSE)
+
+    E(g)$curve[which(E(g)$ari != 0)] <- .1
   } else if (edge_widths == 'percent_ari') {
     E(g)$widths <- vapply(E(g)$percent_ari, function(x){
       if (x == 0 ){

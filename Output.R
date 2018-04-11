@@ -27,4 +27,4 @@ plot_network(node_sizes = 'stays', node_colors = 'cases', edges_to_plot = 'all',
 
 # Slide 3
 plot_network(node_sizes = 'stays', node_colors = 'cases', edges_to_plot = 'ari',
-             edge_colors = 'percent_ari', edge_widths = 'percent_ari')
+             edge_colors = 'ari', edge_widths = 'ari')
