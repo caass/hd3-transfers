@@ -7,7 +7,7 @@
 - [Overview](#overview)
 - [Data Merging](#data-merging)
 - [Network Generation](#network-generation)
-- [Clustering and Layout](#clustering-and-layout)<sup id=clustering-and-layout-toc>[1](#footnote-1)</sup>
+- [Clustering and Layout](#clustering-and-layout)<sup id=clustering-and-layout-toc>[1](#footnote)</sup>
 - [Output](#output)
 - [Results](#results)
 
