@@ -7,7 +7,7 @@
 - [Overview](#overview)
 - [Data Merging](#data-merging)
 - [Network Generation](#network-generation)
-- [Clustering and Layout](#clustering-and-layout)<sup id=clustering-and-layout-toc>[1](#footnote)</sup>
+- [Clustering and Layout](#clustering-and-layout)<sup>[1](#notes)</sup>
 - [Output](#output)
 - [Results](#results)
 
@@ -108,4 +108,4 @@ plot_network(node_sizes = 'stays', node_colors = 'cases', edges_to_plot = 'ari',
 
 #### Notes
 
-[1](#clustering-and-layout-toc) <small id="footnote">_This step no longer works as of `igraph` update [2.1.2](https://github.com/igraph/rigraph/issues/273) due to the removal of the embedded GLPK dependency. At the time of writing, however, it worked fine._</small>
+###### [1](#table-of-contents)  _This step no longer works as of `igraph` update [2.1.2](https://github.com/igraph/rigraph/issues/273) due to the removal of the embedded GLPK dependency. At the time of writing, however, it worked fine._
