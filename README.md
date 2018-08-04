@@ -1,16 +1,15 @@
-HD3 Transfers
-================
+# HD3 Transfers
 
-###### Analyzing Patient Movement in the Atlanta HD3 Area
+## Analyzing Patient Movement in the Atlanta HD3 Area
 
 ### Table of Contents
 
--   [Overview](#overview)
--   [Data Merging](#data-merging)
--   [Network Generation](#network-generation)
--   [Clustering and Layout](#clustering-and-layout)
--   [Output](#output)
--   [Results](#results)
+- [Overview](#overview)
+- [Data Merging](#data-merging)
+- [Network Generation](#network-generation)
+- [Clustering and Layout](#clustering-and-layout)<sup id=clustering-and-layout-toc>[1](#footnote)</sup>
+- [Output](#output)
+- [Results](#results)
 
 ### Overview
 
@@ -48,36 +47,36 @@ Once the clustering is complete, to compute a visually sensical layout, [`layout
 
 Because all the functionality is compartmentalized into different .R files, the only one you need to mess with to get different plots is Output.R. There are a bunch of different possibilities depending on which parameters you want to visualize. These are the possibile values for parameters to pass to `plot_network()`:
 
--   label\_clusters
-    -   TRUE: Put cluster labels (numbers) in the geometric mean of each cluster.
-    -   FALSE: Don't do that.
--   polygon\_clusters
-    -   TRUE: Draw a polygon over each cluster to indicate where the clusters are.
-    -   FALSE: Don't do that.
--   node\_sizes
-    -   "uniform": Size nodes uniformly.
-    -   "stays": Size nodes according to the number of stays at that facility (logarithmic scale).
--   node\_colors
-    -   "uniform": Don't color the nodes.
-    -   "cluster": Each node in a cluster has the same color.
-    -   "cases": Color each node according to the number of cases of ARI at that facility.
-    -   "prevalence": Color each node according to the *rate* of ARI at that facility.
--   edges\_to\_plot
-    -   "suppress": Don't plot edges.
-    -   "ari": Plot all edges with more than 35 transfers, as well as edges which contain ARI.
-    -   "all": Plot all edges with more than 35 transfers. I know this is misleading.
--   edge\_colors
-    -   "suppress": Don't...color...edges? I guess.
-    -   "denominator": Color all the edges grey.
-    -   "ari": Color edges according to the number of ARI transferred along that edge
-    -   "percent\_ari": Color edges according to the *rate* of ARI transferred along that edge
--   edge\_widths
-    -   "uniform": Uniform edge widths.
-    -   "transfers": Make edges that have more transfers thicker (log scale).
-    -   "ari" or "percent\_ari": Edges that contain ARI are `lwd=3`, edges without are `lwd=1`.
--   highlight\_facility
-    -   TRUE: Requires you to pick a node which you want to be highlighted, and highlights that facility accordingly.
-    -   FALSE: Doesn't do that.
+- label\_clusters
+  - TRUE: Put cluster labels (numbers) in the geometric mean of each cluster.
+  - FALSE: Don't do that.
+- polygon\_clusters
+  - TRUE: Draw a polygon over each cluster to indicate where the clusters are.
+  - FALSE: Don't do that.
+- node\_sizes
+  - "uniform": Size nodes uniformly.
+  - "stays": Size nodes according to the number of stays at that facility (logarithmic scale).
+- node\_colors
+  - "uniform": Don't color the nodes.
+  - "cluster": Each node in a cluster has the same color.
+  - "cases": Color each node according to the number of cases of ARI at that facility.
+  - "prevalence": Color each node according to the *rate* of ARI at that facility.
+- edges\_to\_plot
+  - "suppress": Don't plot edges.
+  - "ari": Plot all edges with more than 35 transfers, as well as edges which contain ARI.
+  - "all": Plot all edges with more than 35 transfers. I know this is misleading.
+- edge\_colors
+  - "suppress": Don't...color...edges? I guess.
+  - "denominator": Color all the edges grey.
+  - "ari": Color edges according to the number of ARI transferred along that edge
+  - "percent\_ari": Color edges according to the *rate* of ARI transferred along that edge
+- edge\_widths
+  - "uniform": Uniform edge widths.
+  - "transfers": Make edges that have more transfers thicker (log scale).
+  - "ari" or "percent\_ari": Edges that contain ARI are `lwd=3`, edges without are `lwd=1`.
+- highlight\_facility
+  - TRUE: Requires you to pick a node which you want to be highlighted, and highlights that facility accordingly.
+  - FALSE: Doesn't do that.
 
 ### Results
 
@@ -104,3 +103,9 @@ Coloring transfers according to ARI present along each edge:
 ``` r
 plot_network(node_sizes = 'stays', node_colors = 'cases', edges_to_plot = 'ari', edge_colors = 'ari', edge_widths = 'ari')
 ```
+
+---
+
+#### Notes
+
+<small id="footnote">[1](#clustering-and-layout-toc) _This step no longer works as of `igraph` update [2.1.2](https://github.com/igraph/rigraph/issues/273) due to the removal of the embedded GLPK dependency. At the time of writing, however, it worked fine._</small>
