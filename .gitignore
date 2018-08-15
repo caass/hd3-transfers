@@ -15,7 +15,8 @@ Raw Data/Master Facility List.csv
 Cleaned Data/Merged Data.xlsx
 Cleaned Data/Merged Facilities.csv
 Cleaned Data/Merged Transfers.csv
-Cleaned Data/Adjacency Matrices
+Cleaned Data/Adjacency Matrices/*
+!Cleaned Data/Adjacency Matrices/.gitkeep
 
 # ——— R stuff ————
 
